@@ -5,10 +5,11 @@ const ffmpeg = require('fluent-ffmpeg');
 
 class VideoSlicer {
   constructor(folder) {
-    this.files = read(folder).map((filename, index) => ({
-      id: index, filename
-    }));
+    this.extRegex = /\.mkv|\.mp4/;
     this.folder = folder;
+    this.files = read(folder)
+      .filter(this.extRegex.test)
+      .map((filename, index) => ({ id: index, filename }));
   }
 
   sendClip(query, res) {
@@ -17,12 +18,8 @@ class VideoSlicer {
 
     tmp.file((err, path, fd, cleanup) => {
       if (err) throw err;
-
-      const clipname = filename.replace(/\.mkv|\.mp4/, match => `-clip${match}`);
-
-      const headers = {
-        'Content-Disposition': `attachment; filename="${clipname}"`
-      };
+      const name = filename.replace(this.extRegex, match => `-clip${match}`);
+      const headers = {'Content-Disposition': `attachment; filename="${name}"`};
 
       ffmpeg(filePath)
         .seekInput(query.start)
