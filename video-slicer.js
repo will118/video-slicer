@@ -8,11 +8,15 @@ class VideoSlicer {
     this.folder = folder;
     this.files = read(folder)
       .filter(file => /\.mkv$|\.mp4$/.test(file))
-      .map((filename, index) => ({ id: index, filename }));
+      .map((filename, index) => ({
+        id: index,
+        filename,
+        name: path.parse(filename).base
+      }));
   }
 
   sendClip(query, res) {
-    const filename = this.files[query.id].filename;
+    const { filename } = this.files.find(file => file.id === query.id);
     const filePath = path.join(this.folder, filename);
 
     tmp.file((err, path, fd, cleanup) => {
