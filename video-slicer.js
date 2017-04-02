@@ -16,10 +16,10 @@ class VideoSlicer {
   }
 
   sendClip(query, res) {
-    const { filename } = this.files.find(file => file.id === query.id);
+    const { filename } = this.files.find(file => file.id == query.id);
     const filePath = path.join(this.folder, filename);
 
-    tmp.file((err, path, fd, cleanup) => {
+    tmp.file((err, tmpPath, fd, cleanup) => {
       if (err) throw err;
       const { name, ext } = path.parse(filename);
       const headers = {
@@ -30,8 +30,8 @@ class VideoSlicer {
         .seekInput(query.start)
         .duration(query.duration)
         .format('mp4')
-        .on('end', () => res.sendFile(path, { headers }, () => cleanup()))
-        .save(path);
+        .on('end', () => res.sendFile(tmpPath, { headers }, () => cleanup()))
+        .save(tmpPath);
     });
   }
 }
