@@ -51,10 +51,7 @@ app.get('/files', (req, res) => {
       res.status(400).send(result.mapped());
       return;
     }
-    res.send(videoSlicer.files.map(file => ({
-      id: file.id,
-      name: file.name
-    })));
+    res.send(videoSlicer.files);
   });
 });
 
