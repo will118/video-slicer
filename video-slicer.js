@@ -8,7 +8,7 @@ class VideoSlicer {
     this.extRegex = /\.mkv|\.mp4/;
     this.folder = folder;
     this.files = read(folder)
-      .filter(this.extRegex.test)
+      .filter(file => this.extRegex.test(file))
       .map((filename, index) => ({ id: index, filename }));
   }
 
