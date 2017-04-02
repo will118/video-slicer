@@ -2,6 +2,15 @@
 
 ## example
 
+server
+
 ```
-curl '127.0.0.1:9000/?key=foo&filename=cool.video.mkv&start=01:22&duration=03' > cool.video.clip.mp4
+npm start /data/movies
+```
+
+client
+
+```
+curl 'localhost:9000/files?key=foo'
+curl 'localhost:9000/?key=foo&id=1&start=01:22&duration=03' > cool..mp4
 ```

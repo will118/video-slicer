@@ -7,7 +7,7 @@ const videoSlicer = new VideoSlicer(process.argv[2]);
 
 app.use(expressValidator({
   customValidators: {
-    fileExists: value => videoSlicer.files.includes(value)
+    fileExists: id => videoSlicer.files.find(file => file.id == id)
   }
 }));
 
@@ -30,7 +30,7 @@ const ffmpegSchema = {
 
 app.get('/', (req, res) => {
   req.checkQuery('key').matches(key);
-  req.checkQuery('filename', 'File not found').fileExists();
+  req.checkQuery('id', 'File not found').fileExists();
   req.checkQuery(ffmpegSchema);
 
   req.getValidationResult().then(function(result) {

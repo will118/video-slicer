@@ -1,22 +1,24 @@
-const fs = require('fs');
+const read = require('fs-readdir-recursive');
 const tmp = require('tmp');
 const path = require('path');
 const ffmpeg = require('fluent-ffmpeg');
 
 class VideoSlicer {
   constructor(folder) {
-    this.files = fs.readdirSync(folder).filter(x => !x.startsWith('.'));
+    this.files = read(folder).map((filename, index) => ({
+      id: index, filename
+    }));
     this.folder = folder;
   }
 
   sendClip(query, res) {
-    const filePath = path.join(this.folder, query.filename);
+    const filename = this.files[query.id].filename;
+    const filePath = path.join(this.folder, filename);
 
     tmp.file((err, path, fd, cleanup) => {
       if (err) throw err;
 
-      const clipname = query.filename
-        .replace(/\.mkv|\.mp4/, match => `-clip${match}`);
+      const clipname = filename.replace(/\.mkv|\.mp4/, match => `-clip${match}`);
 
       const headers = {
         'Content-Disposition': `attachment; filename="${clipname}"`
